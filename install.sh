@@ -1,7 +1,7 @@
 #!/bin/sh
 
 use_git='true'
-use_git='false'
+#use_git='false'
 
 A="atom-2.0.1"
 [ "$use_git" = "true" ] && A="atom-2.x"
@@ -19,6 +19,14 @@ wget $url -O $A.tar.gz
 
 echo "Unpacking..."
 tar -xzf $A.tar.gz
+
+if [ ! -f $A/plugins/arDominionPlugin/css/min.css ] ; then
+	echo "Fix CSS"
+	cp files/min.css $A/plugins/arDominionPlugin/css/
+fi
+
+echo "Patching"
+patch -d $A -p1 < files/0001-Avoid-requiring-the-PHP-readline-extension.patch
 
 echo "Linking..."
 rm -f atom-testing
