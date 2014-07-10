@@ -1,0 +1,70 @@
+From 9ea501afe079faad1bf5006a1b85d08a3f423e43 Mon Sep 17 00:00:00 2001
+From: Gioele Barabucci <gioele.barabucci@uni-koeln.de>
+Date: Thu, 10 Jul 2014 15:45:14 +0200
+Subject: [PATCH] Instrument PropelPDO to log all SQL queries
+
+---
+ .../lib/vendor/propel/util/PropelPDO.php           | 35 ++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/vendor/symfony/lib/plugins/sfPropelPlugin/lib/vendor/propel/util/PropelPDO.php b/vendor/symfony/lib/plugins/sfPropelPlugin/lib/vendor/propel/util/PropelPDO.php
+index b51fa10..c479092 100644
+--- a/vendor/symfony/lib/plugins/sfPropelPlugin/lib/vendor/propel/util/PropelPDO.php
++++ b/vendor/symfony/lib/plugins/sfPropelPlugin/lib/vendor/propel/util/PropelPDO.php
+@@ -233,6 +233,19 @@ class PropelPDO extends PDO {
+ 		}
+ 	}
+ 
++	public function eLOG($msg)
++	{
++		$time = new DateTime;
++		$time->setTimezone(new DateTimeZone('Europe/Berlin'));
++		$now = $time->format('Y-d-m H:i:s T');
++
++		$line = "[" . $now . "] " . $msg . " (referer: <" . $_SERVER['HTTP_REFERER'] . ">)\n";
++
++		$log = $_SERVER["DOCUMENT_ROOT"] . "/sql.log";
++
++		error_log($line, 3, $log);
++	}
++
+ 	/**
+ 	 * Overrides PDO::prepare() to add query caching support if the
+ 	 * PropelPDO::PROPEL_ATTR_CACHE_PREPARES was set to true.
+@@ -243,6 +256,7 @@ class PropelPDO extends PDO {
+ 	 */
+ 	public function prepare($sql, $driver_options = array())
+ 	{
++		$this->eLOG("prepare {" . $sql . "}");
+ 		if ($this->cachePreparedStatements) {
+ 			$key = $sql;
+ 			if (!isset($this->preparedStatements[$key])) {
+@@ -265,4 +279,25 @@ class PropelPDO extends PDO {
+ 		$this->preparedStatements = array();
+ 	}
+ 
++	public function exec($sql)
++	{
++		$this->eLOG("exec {" . $sql . "}");
++		$return	= parent::exec($sql);
++
++		return $return;
++	}
++
++	public function query()
++	{
++		$args	= func_get_args();
++		$this->eLOG("query {" . $args . "}");
++
++		if (version_compare(PHP_VERSION, '5.3', '<')) {
++			$return	= call_user_func_array(array($this, 'parent::query'), $args);
++		} else {
++			$return	= call_user_func_array('parent::query', $args);
++		}
++
++		return $return;
++	}
+ }
+-- 
+1.9.1
+
