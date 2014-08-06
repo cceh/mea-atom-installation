@@ -3,3 +3,4 @@ atom-*
 index.html
 .htaccess
 *.log
+*.log.*
