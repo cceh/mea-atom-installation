@@ -3,22 +3,26 @@
 set -e
 set -u
 
-use_git='true'
-#use_git='false'
+version="stable"
+#version="git"
+#version="mea"
 
 A="atom-2.0.1"
-[ "$use_git" = "true" ] && A="atom-2.x"
+[ "$version" = "git" ] && A="atom-qa-2.1.x"
+[ "$version" = "mea" ] && A="atom-qa-2.1.x-mea"
+
+echo "About to install Atom ($version) =  '$A' [press ENTER]" ; read enter
 
 echo "Removing..."
-rm -Rf atom-2.*
+rm -Rf "$A/"
 
 echo "Downloading..."
-if [ "$use_git" = "true" ] ; then
-	url="https://github.com/artefactual/atom/archive/2.x.tar.gz"
+if [ "$version" = "git" ] ; then
+	url="https://github.com/artefactual/atom/archive/qa/2.1.x.tar.gz"
 else
 	url="https://storage.accesstomemory.org/releases/$A.tar.gz"
 fi
-wget $url -O $A.tar.gz
+[ "$version" != "mea" ] && wget $url -O $A.tar.gz
 
 echo "Unpacking..."
 tar -xzf $A.tar.gz
@@ -32,8 +36,13 @@ echo "Patching"
 patch -d $A -p1 < files/0002-Instrument-PropelPDO-to-log-all-SQL-queries.patch
 
 echo "Linking..."
-rm -f atom-testing
-ln -s $A atom-testing
+if [ "$version" != "mea" ] ; then
+	rm -f atom-testing
+	ln -s $A atom-testing
+fi
+
+echo "Create missing directories..."
+mkdir -p $A/uploads
 
 echo "Set permissions..."
 find $A -type d -exec fs setacl -dir {} -acl w-mhart write \;
