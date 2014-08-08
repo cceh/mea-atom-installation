@@ -1,5 +1,8 @@
 #!/bin/sh
 
+set -e
+set -u
+
 use_git='true'
 #use_git='false'
 
