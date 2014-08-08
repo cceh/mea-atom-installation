@@ -26,7 +26,6 @@ if [ ! -f $A/plugins/arDominionPlugin/css/min.css ] ; then
 fi
 
 echo "Patching"
-patch -d $A -p1 < files/0001-Avoid-requiring-the-PHP-readline-extension.patch
 patch -d $A -p1 < files/0002-Instrument-PropelPDO-to-log-all-SQL-queries.patch
 
 echo "Linking..."
