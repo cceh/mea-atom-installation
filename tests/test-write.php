@@ -15,12 +15,14 @@ echo "Testing in '" . $root . "'\n\n";
 unlink($file);
 rmdir($dir);
 
-echo "Can mkdir... ";
+echo "Can mkdir '" . $dir . "'... ";
 echo (int)mkdir($dir);
+echo " (should be " . (int)TRUE . ")";
 echo "\n";
 
 echo "Can write content... ";
 echo (int)file_put_contents($file, $content);
+echo " (should be " . strlen($content) . ")";
 echo "\n";
 
 $new_content = file_get_contents($file);
