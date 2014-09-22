@@ -3,34 +3,68 @@
 set -e
 set -u
 
+LC_ALL=C ; export LC_ALL
+
 version="stable"
 #version="git"
-#version="mea"
+version="mea"
+
+trans_version="atom-qa-2.1.x"
 
 A="atom-2.0.1"
 [ "$version" = "git" ] && A="atom-qa-2.1.x"
 [ "$version" = "mea" ] && A="atom-qa-2.1.x-mea"
 
-echo "About to install Atom ($version) =  '$A' [press ENTER]" ; read enter
+printf "%s" "About to install Atom ($version) = '$A' [press ENTER]" ; read enter
+
+if [ -d "$trans_version" ] ; then
+	echo "Saving translations from '$trans_version'..."
+	rm -Rf translations/
+	mkdir -p translations/
+	find "$trans_version" -type f -iname 'messages.xml' -exec cp --parents {} translations/ \;
+else
+	echo
+	echo "WARNING: the base version for translations '$trans_version' is not available [press ENTER]"
+	read enter
+fi
 
 echo "Removing..."
 rm -Rf "$A/"
 
 echo "Downloading..."
-if [ "$version" = "git" ] ; then
+if [ "$version" = "stable" ] ; then
+	url="https://storage.accesstomemory.org/releases/$A.tar.gz"
+elif [ "$version" = "git" ] ; then
 	url="https://github.com/artefactual/atom/archive/qa/2.1.x.tar.gz"
 else
-	url="https://storage.accesstomemory.org/releases/$A.tar.gz"
+	git clone --branch 'mea' -- 'https://github.com/cceh/atom' "$A"
 fi
-[ "$version" != "mea" ] && wget $url -O $A.tar.gz
 
 echo "Unpacking..."
-tar -xzf $A.tar.gz
+[ "$version" != "mea" ] && tar -xzf $A.tar.gz
 
 if [ ! -f $A/plugins/arDominionPlugin/css/min.css ] ; then
 	echo "Fix CSS"
 	cp files/min.css $A/plugins/arDominionPlugin/css/
 fi
+
+echo "Checking translations..."
+set +e
+if [ -d "translations/" ] ; then
+	diffs=$(diff -urq "$A" "translations/$trans_version" | grep -v '^Only')
+	no_diff=$?
+	if [ "$no_diff" -eq 0 ] ; then
+		echo "...found differences. Please merge them in '$A' before installing it."
+		echo
+		echo "$diffs" | sed -e 's/^/    /'
+		exit 1
+	else
+		echo "...OK: no new translations"
+	fi
+else
+	echo "...skipped: directory 'translation' not found."
+fi
+set -e
 
 echo "Patching"
 patch -d $A -p1 < files/0002-Instrument-PropelPDO-to-log-all-SQL-queries.patch
