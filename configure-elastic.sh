@@ -5,7 +5,7 @@ set -u
 
 . /etc/sysconfig/elasticsearch
 
-CONF_FILE=/var/local/elasticsearch/etc/elasticsearch/elasticsearch.yml
+: ${CONF_FILE:="/var/local/elasticsearch/etc/elasticsearch/elasticsearch.yml"}
 
 grep "CONFIGURED" $CONF_FILE && exit 1
 
