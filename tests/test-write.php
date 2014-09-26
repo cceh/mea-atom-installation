@@ -2,9 +2,10 @@
 
 header('Content-Type: text/plain');
 
-$root = "atom-2.x";
+$root = "../atom-qa-2.1.x";
 if (!is_dir($root)) {
-	$root = "atom-2.0.1";
+	echo "AtoM root not available at '" . $root . "'\n";
+	$root = "../atom-2.0.1";
 }
 $dir = $root . '/test';
 $file = $dir . '/file.txt';
