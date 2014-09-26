@@ -57,6 +57,8 @@ if [ -d "translations/" ] ; then
 		echo "...found differences. Please merge them in '$A' before installing it."
 		echo
 		echo "$diffs" | sed -e 's/^/    /'
+		echo
+		diff -ur "$A" "translations/$trans_version" | grep -v '^Only'
 		exit 1
 	else
 		echo "...OK: no new translations"
