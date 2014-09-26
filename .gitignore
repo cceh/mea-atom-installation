@@ -4,3 +4,5 @@ index.html
 .htaccess
 *.log
 *.log.*
+static-pages/*.html
+static-pages/*.sql
