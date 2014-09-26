@@ -5,15 +5,7 @@ set -u
 
 LC_ALL=C ; export LC_ALL
 
-version="stable"
-#version="git"
-version="mea"
-
-trans_version="atom-qa-2.1.x"
-
-A="atom-2.0.1"
-[ "$version" = "git" ] && A="atom-qa-2.1.x"
-[ "$version" = "mea" ] && A="atom-qa-2.1.x-mea"
+. "$(dirname $0)/params.sh"
 
 printf "%s" "About to install Atom ($version) = '$A' [press ENTER]" ; read enter
 
@@ -37,7 +29,7 @@ if [ "$version" = "stable" ] ; then
 elif [ "$version" = "git" ] ; then
 	url="https://github.com/artefactual/atom/archive/qa/2.1.x.tar.gz"
 else
-	git clone --branch 'mea' -- 'https://github.com/cceh/atom' "$A"
+	git clone --branch "$git_branch" -- 'https://github.com/cceh/atom' "$A"
 fi
 
 echo "Unpacking..."

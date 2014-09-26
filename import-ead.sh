@@ -3,13 +3,7 @@
 set -e
 set -u
 
-version="stable"
-#version="git"
-version="mea"
-
-A="atom-2.0.1"
-[ "$version" = "git" ] && A="atom-qa-2.1.x"
-[ "$version" = "mea" ] && A="atom-qa-2.1.x-mea"
+. "$(dirname $0)/params.sh"
 
 printf "%s" "About to import data into Atom ($version) = '$A' [press ENTER]" ; read enter
 
