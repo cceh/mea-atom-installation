@@ -11,6 +11,8 @@ grep "CONFIGURED" $CONF_FILE && exit 1
 
 echo "Applying CCeH configuration"
 
+echo >> $CONF_FILE
+echo "# What follows are CCeH-specific settings" >> $CONF_FILE
 echo "cluster.name: cceh" >> $CONF_FILE
 echo "discovery.zen.ping.multicast.enabled: false" >> $CONF_FILE
 
