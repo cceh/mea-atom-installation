@@ -68,6 +68,7 @@ set -e
 
 echo "Patching"
 patch -d $A -p1 < files/0002-Instrument-PropelPDO-to-log-all-SQL-queries.patch
+patch -d $A -p1 < files/0003-Disable-elasticsearch-version-cache-REMOVE.patch
 
 echo "Linking..."
 if [ "$version" != "mea" ] ; then

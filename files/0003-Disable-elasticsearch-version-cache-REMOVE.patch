@@ -1,0 +1,37 @@
+diff --git a/plugins/arElasticSearchPlugin/lib/arElasticSearchPlugin.class.php b/plugins/arElasticSearchPlugin/lib/arElasticSearchPlugin.class.php
+index 3d52230..4ae5664 100644
+--- a/plugins/arElasticSearchPlugin/lib/arElasticSearchPlugin.class.php
++++ b/plugins/arElasticSearchPlugin/lib/arElasticSearchPlugin.class.php
+@@ -76,8 +76,6 @@ class arElasticSearchPlugin extends QubitSearchEngine
+   {
+     parent::__construct();
+ 
+-    $this->cache = QubitCache::getInstance();
+-
+     $this->config = arElasticSearchPluginConfiguration::$config;
+     $this->client = new \Elastica\Client($this->config['server']);
+ 
+@@ -135,12 +133,6 @@ class arElasticSearchPlugin extends QubitSearchEngine
+    */
+   private function checkVersion()
+   {
+-    // Avoid the check if the cache entry is still available
+-    if ($this->cache->has('elasticsearch_version_ok'))
+-    {
+-      return;
+-    }
+-
+     // This is slow as it hits the server
+     $version = $this->getVersion();
+     if (!version_compare($version, self::MIN_VERSION, '>='))
+@@ -148,10 +140,6 @@ class arElasticSearchPlugin extends QubitSearchEngine
+       $message = sprintf('The version of Elasticsearch that you are running is out of date (%s), and no longer compatible with this version of AtoM. Please upgrade to version %s or newer.', $version, self::MIN_VERSION);
+       throw new \Elastica\Exception\ClientException($message);
+     }
+-
+-    // We know at this point that the server meets the requirements. We cache it
+-    // for an hour.
+-    $this->cache->set('elasticsearch_version_ok', 1, 3600);
+   }
+ 
+   /**
