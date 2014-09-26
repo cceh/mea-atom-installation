@@ -13,6 +13,8 @@ A="atom-2.0.1"
 
 printf "%s" "About to import data into Atom ($version) = '$A' [press ENTER]" ; read enter
 
+printf "%s" "Is the German language set up in Atom? [press ENTER]" ; read enter
+
 cd "$A"
 
 sentinel_file='config/search.yml'
