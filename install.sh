@@ -14,6 +14,7 @@ if [ -d "$trans_version" ] ; then
 	rm -Rf translations/
 	mkdir -p translations/
 	find "$trans_version" -type f -iname 'messages.xml' -exec cp --parents {} translations/ \;
+	cp --parents -r "$trans_version/data/fixtures" translations/
 else
 	echo
 	echo "WARNING: the base version for translations '$trans_version' is not available [press ENTER]"
@@ -51,7 +52,9 @@ if [ -d "translations/" ] ; then
 		echo "$diffs" | sed -e 's/^/    /'
 		echo
 		diff -ur "$A" "translations/$trans_version" | grep -v '^Only'
-		exit 1
+		echo
+		printf "%s" "WARNING: Translations not up to date, continue? [yn] " ; read yn
+		[ "$yn" != "y" ] && exit 1
 	else
 		echo "...OK: no new translations"
 	fi
