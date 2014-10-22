@@ -17,8 +17,6 @@ if [ ! -f "$sentinel_file" ] ; then
 	exit 1
 fi
 
-ead_dir="../ead-imports/import6"
-
 echo "Importing EAD from directory '$ead_dir'..."
 ./symfony import:bulk "$ead_dir"
 
