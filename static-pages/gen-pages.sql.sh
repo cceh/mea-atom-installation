@@ -25,8 +25,8 @@ for page in $(ls -1 `dirname $0`/*.html) ; do
 	slug_idx=$((slug_base + idx))
 
 	slug=$(basename $page .html)
-	title=$(cat $page | head -n 1 | sed -e "s/'/\'/g")
-	content=$(cat $page | tail -n +2 | sed -e "s/'/\'/g")
+	title=$(cat $page | head -n 1 | sed -e "s/'/''/g")
+	content=$(cat $page | tail -n +2 | sed -e "s/'/''/g")
 	seconds=$(printf "%02d" "$idx")
 
 	echo
