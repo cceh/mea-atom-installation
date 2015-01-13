@@ -3,6 +3,7 @@ atom-*
 404.html
 index.html
 .htaccess
+.htusers
 *.log
 *.log.*
 static-pages/*.html
